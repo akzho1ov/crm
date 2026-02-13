@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ user.name }}</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #1e3c72;
+    --primary-dark: #152a52;
+    --secondary: #2a5298;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #0f1419;
+    --bg-light: #1a1f2e;
+    --card: #242b3d;
+    --border: #2d3548;
+    --text: #e5e7eb;
+    --text-dim: #9ca3af;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* Навигация */
+.navbar {
+    background: var(--bg-light);
+    padding: 16px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--primary);
+}
+
+.navbar h1 {
+    font-size: 20px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+}
+
+.btn-logout {
+    padding: 10px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Вкладки */
+.tabs {
+    display: flex;
+    background: var(--bg-light);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 68px;
+    z-index: 99;
+}
+
+.tab {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s;
+    color: var(--text-dim);
+    font-size: 14px;
+}
+
+.tab:hover {
+    background: var(--card);
+    color: var(--text);
+}
+
+.tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: var(--card);
+}
+
+/* Контейнер */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Секции */
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Кнопки периодов */
+.period-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--card);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.period-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    color: var(--text-dim);
+}
+
+.period-buttons button:hover {
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.period-buttons button.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+/* Календарь дней */
+.day-selector {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+
+.day-selector h3 {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.day-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.day-button {
+    aspect-ratio: 1;
+    border: 2px solid var(--border);
+    background: var(--bg-light);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+}
+
+.day-button:hover {
+    border-color: var(--primary);
+    transform: scale(1.05);
+    background: var(--card);
+}
+
+.day-button.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.day-button.today {
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+/* Метрики */
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.metric label {
+    display: block;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.metric input {
+    width: 100%;
+    border: 2px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.metric input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--card);
+}
+
+.metric-display {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.metric-display label {
+    display: block;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.metric-display .value {
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Кнопка сохранения */
+.btn-save {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(30,60,114,0.4);
+}
+
+.btn-save:active {
+    transform: translateY(0);
+}
+
+/* Клиенты */
+.clients-list {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.client-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.client-item:hover {
+    background: var(--bg-light);
+}
+
+.client-item:last-child {
+    border-bottom: none;
+}
+
+.client-name {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.client-info {
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+.btn-add {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    color: white;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(16,185,129,0.4);
+    transition: all 0.2s;
+    z-index: 90;
+}
+
+.btn-add:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(16,185,129,0.6);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card);
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 2px solid var(--border);
+}
+
+.modal-content h2 {
+    margin-bottom: 24px;
+    color: var(--text);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+    color: white;
+}
+
+/* Лоадер */
+.loader {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 20, 25, 0.95);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+}
+
+.loader.show {
+    display: flex;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(30,60,114,0.3);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader-text {
+    color: var(--text);
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.period-info {
+    background: rgba(30,60,114,0.2);
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary);
+    border: 1px solid rgba(30,60,114,0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-dim);
+}
+
+/* Toast уведомления */
+.toast {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    background: var(--card);
+    color: var(--text);
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid var(--success);
+    animation: slideIn 0.3s;
+}
+
+.toast.show {
+    display: flex;
+}
+
+.toast.success {
+    border-color: var(--success);
+}
+
+.toast.error {
+    border-color: var(--danger);
+}
+
+.toast-icon {
+    font-size: 24px;
+}
+
+.toast-message {
+    font-weight: 600;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Лоадер -->
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Загрузка...</div>
+</div>
+
+<!-- Toast уведомление -->
+<div class="toast" id="toast">
+    <div class="toast-icon">✓</div>
+    <div class="toast-message"></div>
+</div>
+
+<!-- Навигация -->
+<div class="navbar">
+    <h1>{{ user.name }}</h1>
+    <button class="btn-logout" onclick="location.href='/logout'">Выход</button>
+</div>
+
+<!-- Вкладки -->
+<div class="tabs">
+    <div class="tab active" onclick="switchTab('report')">📊 Отчёт</div>
+    <div class="tab" onclick="switchTab('clients')">👥 Клиенты</div>
+    <div class="tab" onclick="switchTab('totals')">📈 Итоги</div>
+</div>
+
+<div class="container">
+
+<!-- СЕКЦИЯ: ОТЧЁТ -->
+<div class="section active" id="report">
+    <div class="period-buttons">
+        <button class="active" onclick="switchPeriod('day')">День</button>
+        <button onclick="switchPeriod('week')">Неделя</button>
+        <button onclick="switchPeriod('month')">Месяц</button>
+    </div>
+
+    <div id="viewDay">
+        <div class="day-selector">
+            <h3>Выберите день</h3>
+            <div class="day-grid" id="dayGrid"></div>
+        </div>
+
+        <div class="metrics">
+            <div class="metric">
+                <label>Лиды</label>
+                <input type="number" id="leads" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>В обработке</label>
+                <input type="number" id="process" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>Нет ответа</label>
+                <input type="number" id="no_answer" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>Ожидание</label>
+                <input type="number" id="waiting" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>Отказы</label>
+                <input type="number" id="reject" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>Продажи</label>
+                <input type="number" id="sales" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>💰 Выручка</label>
+                <input type="number" id="revenue" min="0" value="0">
+            </div>
+            <div class="metric">
+                <label>💳 Дебиторка</label>
+                <input type="number" id="balance" min="0" value="0">
+            </div>
+        </div>
+
+        <button class="btn-save" onclick="saveDailyData()">Сохранить данные</button>
+    </div>
+
+    <div id="viewWeek" style="display:none">
+        <div class="period-info" id="weekInfo">Неделя</div>
+        <div class="day-selector">
+            <h3>Выберите день</h3>
+            <div class="day-grid" id="dayGridWeek"></div>
+        </div>
+        <div class="metrics">
+            <div class="metric-display"><label>Лиды</label><div class="value" id="wLeads">0</div></div>
+            <div class="metric-display"><label>Продажи</label><div class="value" id="wSales">0</div></div>
+            <div class="metric-display"><label>Выручка</label><div class="value" id="wRevenue">0</div></div>
+            <div class="metric-display"><label>Дебиторка</label><div class="value" id="wBalance">0</div></div>
+        </div>
+    </div>
+
+    <div id="viewMonth" style="display:none">
+        <div class="period-info">Весь месяц</div>
+        <div class="metrics">
+            <div class="metric-display"><label>Лиды</label><div class="value" id="mLeads">0</div></div>
+            <div class="metric-display"><label>Продажи</label><div class="value" id="mSales">0</div></div>
+            <div class="metric-display"><label>Конверсия</label><div class="value" id="mConv">0%</div></div>
+            <div class="metric-display"><label>Выручка</label><div class="value" id="mRevenue">0</div></div>
+            <div class="metric-display"><label>Средний чек</label><div class="value" id="mAvg">0</div></div>
+            <div class="metric-display"><label>Дебиторка</label><div class="value" id="mBalance">0</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- СЕКЦИЯ: КЛИЕНТЫ -->
+<div class="section" id="clients">
+    <div class="clients-list" id="clientsList"></div>
+    <button class="btn-add" onclick="openAddClient()">+</button>
+</div>
+
+<!-- СЕКЦИЯ: ИТОГИ -->
+<div class="section" id="totals">
+    <div class="period-buttons">
+        <button onclick="switchTotalsPeriod('day')">День</button>
+        <button onclick="switchTotalsPeriod('week')">Неделя</button>
+        <button class="active" onclick="switchTotalsPeriod('month')">Месяц</button>
+    </div>
+    <div class="metrics">
+        <div class="metric-display"><label>Лиды</label><div class="value" id="tLeads">{{ data.totals.leads }}</div></div>
+        <div class="metric-display"><label>Продажи</label><div class="value" id="tSales">{{ data.totals.sales }}</div></div>
+        <div class="metric-display"><label>Конверсия</label><div class="value" id="tConv">{{ data.totals.conv }}%</div></div>
+        <div class="metric-display"><label>Выручка</label><div class="value" id="tRevenue">{{ data.totals.revenue }}</div></div>
+        <div class="metric-display"><label>Средний чек</label><div class="value" id="tAvg">{{ data.totals.avg_check }}</div></div>
+        <div class="metric-display"><label>Дебиторка</label><div class="value" id="tBalance">{{ data.totals.balance }}</div></div>
+    </div>
+</div>
+
+</div>
+
+<!-- Модальное окно клиента -->
+<div class="modal" id="clientModal" onclick="if(event.target===this) closeClientModal()">
+    <div class="modal-content">
+        <h2 id="modalTitle">Добавить клиента</h2>
+        <div class="form-group">
+            <label>Имя</label>
+            <input type="text" id="cName" placeholder="Имя клиента">
+        </div>
+        <div class="form-group">
+            <label>Регион</label>
+            <input type="text" id="cRegion" placeholder="Город">
+        </div>
+        <div class="form-group">
+            <label>Телефон</label>
+            <input type="text" id="cPhone" placeholder="+996...">
+        </div>
+        <div class="form-group">
+            <label>Цена</label>
+            <input type="number" id="cPrice" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>Статус</label>
+            <select id="cStatus">
+                <option value="">Выберите</option>
+                <option value="Полностью">Полностью оплачено</option>
+                <option value="Частично">Частично оплачено</option>
+                <option value="Ожидание">Ожидание оплаты</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Следующий контакт</label>
+            <input type="date" id="cNextDate">
+        </div>
+        <div class="form-group">
+            <label>Комментарий</label>
+            <input type="text" id="cComment" placeholder="Заметки">
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-secondary" onclick="closeClientModal()">Отмена</button>
+            <button class="btn-danger" id="btnDelete" onclick="deleteClient()" style="display:none">Удалить</button>
+            <button class="btn-primary" onclick="saveClient()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const appData = {{ data|tojson }};
+const today = {{ today }};
+let currentDay = today;
+let currentPeriod = 'day';
+let currentTotalsPeriod = 'month';
+let editingClient = null;
+
+// Toast уведомления
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = toast.querySelector('.toast-message');
+    const toastIcon = toast.querySelector('.toast-icon');
+    
+    toastMessage.textContent = message;
+    toast.className = 'toast show ' + type;
+    toastIcon.textContent = type === 'success' ? '✓' : '✗';
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+    if (tabName === 'clients') renderClients();
+}
+
+function switchPeriod(period) {
+    currentPeriod = period;
+    const buttons = document.querySelectorAll('#report .period-buttons button');
+    buttons[0].classList.toggle('active', period === 'day');
+    buttons[1].classList.toggle('active', period === 'week');
+    buttons[2].classList.toggle('active', period === 'month');
+    
+    document.getElementById('viewDay').style.display = period === 'day' ? 'block' : 'none';
+    document.getElementById('viewWeek').style.display = period === 'week' ? 'block' : 'none';
+    document.getElementById('viewMonth').style.display = period === 'month' ? 'block' : 'none';
+    
+    if (period === 'day') loadDayData(currentDay);
+    else if (period === 'week') { renderWeekDayGrid(); loadWeekData(currentDay); }
+    else if (period === 'month') loadMonthData();
+}
+
+function renderDayGrid() {
+    const grid = document.getElementById('dayGrid');
+    grid.innerHTML = '';
+    for (let d = 1; d <= 31; d++) {
+        const btn = document.createElement('button');
+        btn.className = 'day-button';
+        btn.textContent = d;
+        btn.onclick = () => selectDay(d);
+        if (d === currentDay) btn.classList.add('active');
+        if (d === today) btn.classList.add('today');
+        grid.appendChild(btn);
+    }
+}
+
+function renderWeekDayGrid() {
+    const grid = document.getElementById('dayGridWeek');
+    grid.innerHTML = '';
+    for (let d = 1; d <= 31; d++) {
+        const btn = document.createElement('button');
+        btn.className = 'day-button';
+        btn.textContent = d;
+        btn.onclick = () => { currentDay = d; renderWeekDayGrid(); loadWeekData(d); };
+        if (d === currentDay) btn.classList.add('active');
+        if (d === today) btn.classList.add('today');
+        grid.appendChild(btn);
+    }
+}
+
+function selectDay(day) {
+    currentDay = day;
+    document.querySelectorAll('#dayGrid .day-button').forEach((btn, index) => {
+        btn.classList.toggle('active', (index + 1) === day);
+    });
+    loadDayData(day);
+}
+
+function loadDayData(day) {
+    const dayData = appData.days[day] || {};
+    document.getElementById('leads').value = dayData.leads || 0;
+    document.getElementById('process').value = dayData.process || 0;
+    document.getElementById('no_answer').value = dayData.no_answer || 0;
+    document.getElementById('waiting').value = dayData.waiting || 0;
+    document.getElementById('reject').value = dayData.reject || 0;
+    document.getElementById('sales').value = dayData.sales || 0;
+    document.getElementById('revenue').value = dayData.revenue || 0;
+    document.getElementById('balance').value = dayData.balance || 0;
+}
+
+async function loadWeekData(day) {
+    showLoader();
+    const formData = new FormData();
+    formData.append('period', 'week');
+    formData.append('day', day);
+    
+    try {
+        const response = await fetch('/api/period_data', { method: 'POST', body: formData });
+        const result = await response.json();
+        if (result.success) {
+            const m = result.metrics;
+            document.getElementById('weekInfo').textContent = `Неделя: дни ${result.start_day}-${result.end_day}`;
+            document.getElementById('wLeads').textContent = m.leads;
+            document.getElementById('wSales').textContent = m.sales;
+            document.getElementById('wRevenue').textContent = m.revenue.toLocaleString();
+            document.getElementById('wBalance').textContent = m.balance.toLocaleString();
+        }
+    } catch (e) {
+        showToast('Ошибка загрузки данных', 'error');
+    } finally {
+        hideLoader();
+    }
+}
+
+async function loadMonthData() {
+    const t = appData.totals;
+    document.getElementById('mLeads').textContent = t.leads;
+    document.getElementById('mSales').textContent = t.sales;
+    document.getElementById('mConv').textContent = t.conv + '%';
+    document.getElementById('mRevenue').textContent = t.revenue.toLocaleString();
+    document.getElementById('mAvg').textContent = t.avg_check.toLocaleString();
+    document.getElementById('mBalance').textContent = t.balance.toLocaleString();
+}
+
+async function saveDailyData() {
+    showLoader();
+    const formData = new FormData();
+    formData.append('day', currentDay);
+    formData.append('leads', document.getElementById('leads').value);
+    formData.append('process', document.getElementById('process').value);
+    formData.append('no_answer', document.getElementById('no_answer').value);
+    formData.append('waiting', document.getElementById('waiting').value);
+    formData.append('reject', document.getElementById('reject').value);
+    formData.append('sales', document.getElementById('sales').value);
+    formData.append('revenue', document.getElementById('revenue').value);
+    formData.append('balance', document.getElementById('balance').value);
+    
+    try {
+        const response = await fetch('/api/save_daily', { method: 'POST', body: formData });
+        const result = await response.json();
+        if (result.success) {
+            appData.totals = result.totals;
+            appData.days[currentDay] = {
+                leads: parseInt(document.getElementById('leads').value) || 0,
+                process: parseInt(document.getElementById('process').value) || 0,
+                no_answer: parseInt(document.getElementById('no_answer').value) || 0,
+                waiting: parseInt(document.getElementById('waiting').value) || 0,
+                reject: parseInt(document.getElementById('reject').value) || 0,
+                sales: parseInt(document.getElementById('sales').value) || 0,
+                revenue: parseInt(document.getElementById('revenue').value) || 0,
+                balance: parseInt(document.getElementById('balance').value) || 0
+            };
+            showToast('Данные успешно сохранены!', 'success');
+        } else {
+            showToast('Ошибка сохранения данных', 'error');
+        }
+    } catch (e) {
+        showToast('Ошибка сети', 'error');
+    } finally {
+        hideLoader();
+    }
+}
+
+async function switchTotalsPeriod(period) {
+    currentTotalsPeriod = period;
+    const buttons = document.querySelectorAll('#totals .period-buttons button');
+    buttons[0].classList.toggle('active', period === 'day');
+    buttons[1].classList.toggle('active', period === 'week');
+    buttons[2].classList.toggle('active', period === 'month');
+    
+    showLoader();
+    const formData = new FormData();
+    formData.append('period', period);
+    formData.append('day', currentDay);
+    
+    try {
+        const response = await fetch('/api/period_data', { method: 'POST', body: formData });
+        const result = await response.json();
+        if (result.success) {
+            const m = result.metrics;
+            document.getElementById('tLeads').textContent = m.leads;
+            document.getElementById('tSales').textContent = m.sales;
+            const conv = m.leads > 0 ? ((m.sales / m.leads) * 100).toFixed(1) : 0;
+            document.getElementById('tConv').textContent = conv + '%';
+            document.getElementById('tRevenue').textContent = m.revenue.toLocaleString();
+            const avg = m.sales > 0 ? Math.round(m.revenue / m.sales) : 0;
+            document.getElementById('tAvg').textContent = avg.toLocaleString();
+            document.getElementById('tBalance').textContent = m.balance.toLocaleString();
+        }
+    } catch (e) {
+        showToast('Ошибка загрузки данных', 'error');
+    } finally {
+        hideLoader();
+    }
+}
+
+function renderClients() {
+    const list = document.getElementById('clientsList');
+    if (appData.clients.length === 0) {
+        list.innerHTML = '<div class="empty-state">Нет клиентов. Нажмите + чтобы добавить</div>';
+        return;
+    }
+    list.innerHTML = appData.clients.map(c => `
+        <div class="client-item" onclick='editClient(${JSON.stringify(c).replace(/'/g, "&#39;")})'>
+            <div class="client-name">${c.name || 'Без имени'}</div>
+            <div class="client-info">
+                ${c.region ? c.region + ' • ' : ''}${c.phone}<br>
+                ${c.price ? c.price.toLocaleString() + ' сом • ' : ''}${c.status}
+            </div>
+        </div>
+    `).join('');
+}
+
+function openAddClient() {
+    editingClient = null;
+    document.getElementById('modalTitle').textContent = 'Добавить клиента';
+    document.getElementById('cName').value = '';
+    document.getElementById('cRegion').value = '';
+    document.getElementById('cPhone').value = '';
+    document.getElementById('cPrice').value = '';
+    document.getElementById('cStatus').value = '';
+    document.getElementById('cNextDate').value = '';
+    document.getElementById('cComment').value = '';
+    document.getElementById('btnDelete').style.display = 'none';
+    document.getElementById('clientModal').classList.add('show');
+}
+
+function editClient(client) {
+    editingClient = client;
+    document.getElementById('modalTitle').textContent = 'Редактировать клиента';
+    document.getElementById('cName').value = client.name;
+    document.getElementById('cRegion').value = client.region;
+    document.getElementById('cPhone').value = client.phone;
+    document.getElementById('cPrice').value = client.price;
+    document.getElementById('cStatus').value = client.status;
+    document.getElementById('cNextDate').value = client.next_date;
+    document.getElementById('cComment').value = client.comment;
+    document.getElementById('btnDelete').style.display = 'block';
+    document.getElementById('clientModal').classList.add('show');
+}
+
+function closeClientModal() {
+    document.getElementById('clientModal').classList.remove('show');
+}
+
+async function saveClient() {
+    showLoader();
+    const formData = new FormData();
+    if (editingClient) formData.append('row', editingClient.row);
+    formData.append('name', document.getElementById('cName').value);
+    formData.append('region', document.getElementById('cRegion').value);
+    formData.append('phone', document.getElementById('cPhone').value);
+    formData.append('price', document.getElementById('cPrice').value);
+    formData.append('status', document.getElementById('cStatus').value);
+    formData.append('next_date', document.getElementById('cNextDate').value);
+    formData.append('comment', document.getElementById('cComment').value);
+    
+    try {
+        const response = await fetch('/api/save_client', { method: 'POST', body: formData });
+        const result = await response.json();
+        if (result.success) {
+            appData.clients = result.clients;
+            closeClientModal();
+            renderClients();
+            showToast('Клиент успешно сохранен!', 'success');
+        } else {
+            showToast('Ошибка сохранения клиента', 'error');
+        }
+    } catch (e) {
+        showToast('Ошибка сети', 'error');
+    } finally {
+        hideLoader();
+    }
+}
+
+async function deleteClient() {
+    if (!confirm('Удалить клиента?')) return;
+    showLoader();
+    const formData = new FormData();
+    formData.append('row', editingClient.row);
+    
+    try {
+        const response = await fetch('/api/delete_client', { method: 'POST', body: formData });
+        const result = await response.json();
+        if (result.success) {
+            appData.clients = result.clients;
+            closeClientModal();
+            renderClients();
+            showToast('Клиент удален', 'success');
+        } else {
+            showToast('Ошибка удаления', 'error');
+        }
+    } catch (e) {
+        showToast('Ошибка сети', 'error');
+    } finally {
+        hideLoader();
+    }
+}
+
+function showLoader() {
+    document.getElementById('loader').classList.add('show');
+}
+
+function hideLoader() {
+    document.getElementById('loader').classList.remove('show');
+}
+
+renderDayGrid();
+loadDayData(currentDay);
+renderClients();
+</script>
+</body>
+</html>
