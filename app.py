@@ -70,7 +70,7 @@ def to_date_str(value):
 def read_manager_data(num):
     """Читает все данные менеджера из Excel"""
     try:
-        wb = load_workbook(EXCEL_FILE, data_only=True, read_only=False)
+        wb = load_workbook(EXCEL_FILE, data_only=True, read_only=True)
         sheet_name = f'Mgr_{num}'
         
         if sheet_name not in wb.sheetnames:
