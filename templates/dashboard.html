@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дашборд CRM</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #1e3c72;
+    --primary-dark: #152a52;
+    --secondary: #2a5298;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #0f1419;
+    --bg-light: #1a1f2e;
+    --card: #242b3d;
+    --border: #2d3548;
+    --text: #e5e7eb;
+    --text-dim: #9ca3af;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.navbar {
+    background: var(--bg-light);
+    padding: 16px 24px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--primary);
+}
+
+.navbar h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+}
+
+.btn-logout {
+    padding: 10px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.period-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: var(--card);
+    padding: 6px;
+    border-radius: 12px;
+    width: fit-content;
+    border: 1px solid var(--border);
+}
+
+.period-buttons button {
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    color: var(--text-dim);
+}
+
+.period-buttons button:hover {
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.period-buttons button.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.kpi {
+    background: var(--card);
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+}
+
+.kpi-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.kpi.blue .kpi-value {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kpi.green .kpi-value {
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kpi.yellow .kpi-value {
+    background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kpi.red .kpi-value {
+    background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kpi.purple .kpi-value {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-light);
+}
+
+.card-header h2 {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background: var(--bg-light);
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+tbody td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr:hover {
+    background: var(--bg-light);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.manager-name {
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+}
+
+.manager-name:hover {
+    color: var(--primary);
+}
+
+.edit-icon {
+    opacity: 0;
+    font-size: 12px;
+}
+
+.manager-name:hover .edit-icon {
+    opacity: 1;
+}
+
+.rank-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.rank-1 { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #fff; }
+.rank-2 { background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%); color: #1f2937; }
+.rank-3 { background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); color: #fff; }
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card);
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    border: 2px solid var(--border);
+}
+
+.modal-content h2 {
+    margin-bottom: 24px;
+    color: var(--text);
+    font-weight: 800;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.loader {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 20, 25, 0.95);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+}
+
+.loader.show {
+    display: flex;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(30,60,114,0.3);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader-text {
+    color: var(--text);
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    background: var(--card);
+    color: var(--text);
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid var(--success);
+    animation: slideIn 0.3s;
+}
+
+.toast.show {
+    display: flex;
+}
+
+.toast.success {
+    border-color: var(--success);
+}
+
+.toast.error {
+    border-color: var(--danger);
+}
+
+.toast-icon {
+    font-size: 24px;
+}
+
+.toast-message {
+    font-weight: 600;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+</div>
+
+<div class="toast" id="toast">
+    <div class="toast-icon">✓</div>
+    <div class="toast-message"></div>
+</div>
+
+<div class="navbar">
+    <h1>Дашборд CRM</h1>
+    <button class="btn-logout" onclick="location.href='/logout'">Выход</button>
+</div>
+
+<div class="container">
+    <div class="period-buttons">
+        <button class="active" data-period="month" onclick="switchPeriod('month')">Месяц</button>
+        <button data-period="week" onclick="switchPeriod('week')">Неделя</button>
+        <button data-period="day" onclick="switchPeriod('day')">День</button>
+    </div>
+
+    <div class="kpis" id="kpis">
+        <div class="kpi blue">
+            <div class="kpi-label">Всего лидов</div>
+            <div class="kpi-value" id="kpi-leads">{{ data.totals.leads }}</div>
+        </div>
+        <div class="kpi blue">
+            <div class="kpi-label">В обработке</div>
+            <div class="kpi-value" id="kpi-process">{{ data.totals.process }}</div>
+        </div>
+        <div class="kpi yellow">
+            <div class="kpi-label">Нет ответа</div>
+            <div class="kpi-value" id="kpi-no-answer">{{ data.totals.no_answer }}</div>
+        </div>
+        <div class="kpi blue">
+            <div class="kpi-label">Ожидание</div>
+            <div class="kpi-value" id="kpi-waiting">{{ data.totals.waiting }}</div>
+        </div>
+        <div class="kpi red">
+            <div class="kpi-label">Отказы</div>
+            <div class="kpi-value" id="kpi-reject">{{ data.totals.reject }}</div>
+        </div>
+        <div class="kpi green">
+            <div class="kpi-label">Продажи</div>
+            <div class="kpi-value" id="kpi-sales">{{ data.totals.sales }}</div>
+        </div>
+        <div class="kpi yellow">
+            <div class="kpi-label">Конверсия</div>
+            <div class="kpi-value" id="kpi-conv">{{ data.totals.conv }}%</div>
+        </div>
+        <div class="kpi purple">
+            <div class="kpi-label">Выручка</div>
+            <div class="kpi-value" id="kpi-revenue">{{ '{:,}'.format(data.totals.revenue).replace(',', ' ') }}</div>
+        </div>
+        <div class="kpi green">
+            <div class="kpi-label">Средний чек</div>
+            <div class="kpi-value" id="kpi-avg">{{ '{:,}'.format(data.totals.avg_check).replace(',', ' ') }}</div>
+        </div>
+        <div class="kpi red">
+            <div class="kpi-label">Дебиторка</div>
+            <div class="kpi-value" id="kpi-balance">{{ '{:,}'.format(data.totals.balance).replace(',', ' ') }}</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 id="tableTitle">👥 Менеджеры ({{ data.managers|length }}) - Месяц</h2>
+        </div>
+        <div style="overflow-x: auto;">
+            <table id="managerTable">
+                <thead>
+                    <tr>
+                        <th>Ранг</th>
+                        <th>Менеджер</th>
+                        <th>Лиды</th>
+                        <th>В обр.</th>
+                        <th>Нет отв.</th>
+                        <th>Ожид.</th>
+                        <th>Отказ</th>
+                        <th>Продажи</th>
+                        <th>Конв. %</th>
+                        <th>Выручка</th>
+                        <th>Ср. чек</th>
+                        <th>Дебит.</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for m in data.managers %}
+                    <tr>
+                        <td>
+                            {% if m.rank == 1 %}
+                                <span class="rank-badge rank-1">🥇 {{ m.rank }}</span>
+                            {% elif m.rank == 2 %}
+                                <span class="rank-badge rank-2">🥈 {{ m.rank }}</span>
+                            {% elif m.rank == 3 %}
+                                <span class="rank-badge rank-3">🥉 {{ m.rank }}</span>
+                            {% else %}
+                                <span class="rank-badge">{{ m.rank }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="manager-name" onclick="editManager({{ m.num }}, '{{ m.name }}')">
+                                {{ m.name }}
+                                <span class="edit-icon">✏️</span>
+                            </div>
+                        </td>
+                        <td>{{ m.leads }}</td>
+                        <td>{{ m.process }}</td>
+                        <td>{{ m.no_answer }}</td>
+                        <td>{{ m.waiting }}</td>
+                        <td>{{ m.reject }}</td>
+                        <td style="color: var(--success); font-weight: 700;">{{ m.sales }}</td>
+                        <td style="color: var(--warning); font-weight: 700;">{{ m.conv }}%</td>
+                        <td style="color: var(--primary); font-weight: 700;">{{ '{:,}'.format(m.revenue).replace(',', ' ') }}</td>
+                        <td>{{ '{:,}'.format(m.avg_check).replace(',', ' ') }}</td>
+                        <td style="color: var(--danger);">{{ '{:,}'.format(m.balance).replace(',', ' ') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="renameModal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-content">
+        <h2>✏️ Переименовать менеджера</h2>
+        <div class="form-group">
+            <label>Новое имя</label>
+            <input type="text" id="newName" placeholder="Введите имя">
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn-primary" onclick="saveManagerName()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let editingManagerNum = null;
+let currentPeriod = 'month';
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = toast.querySelector('.toast-message');
+    const toastIcon = toast.querySelector('.toast-icon');
+    
+    toastMessage.textContent = message;
+    toast.className = 'toast show ' + type;
+    toastIcon.textContent = type === 'success' ? '✓' : '✗';
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+async function switchPeriod(period) {
+    currentPeriod = period;
+    
+    document.querySelectorAll('.period-buttons button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.period === period);
+    });
+    
+    const periodText = period === 'month' ? 'Месяц' : period === 'week' ? 'Неделя' : 'День';
+    document.getElementById('tableTitle').textContent = `👥 Менеджеры (20) - ${periodText}`;
+    
+    document.getElementById('loader').classList.add('show');
+    
+    const formData = new FormData();
+    formData.append('period', period);
+    if (period === 'day' || period === 'week') {
+        formData.append('day', new Date().getDate());
+    }
+    
+    try {
+        const response = await fetch('/api/dashboard_period', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            updateDashboard(result.managers, result.totals);
+        } else {
+            showToast('Ошибка загрузки данных', 'error');
+        }
+    } catch (e) {
+        showToast('Ошибка сети', 'error');
+    } finally {
+        document.getElementById('loader').classList.remove('show');
+    }
+}
+
+function updateDashboard(managers, totals) {
+    // Обновляем KPI
+    document.getElementById('kpi-leads').textContent = totals.leads;
+    document.getElementById('kpi-process').textContent = totals.process;
+    document.getElementById('kpi-no-answer').textContent = totals.no_answer;
+    document.getElementById('kpi-waiting').textContent = totals.waiting;
+    document.getElementById('kpi-reject').textContent = totals.reject;
+    document.getElementById('kpi-sales').textContent = totals.sales;
+    document.getElementById('kpi-conv').textContent = totals.conv + '%';
+    document.getElementById('kpi-revenue').textContent = totals.revenue.toLocaleString();
+    document.getElementById('kpi-avg').textContent = totals.avg_check.toLocaleString();
+    document.getElementById('kpi-balance').textContent = totals.balance.toLocaleString();
+    
+    // Обновляем таблицу
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = managers.map(m => `
+        <tr>
+            <td>
+                ${m.rank === 1 ? '<span class="rank-badge rank-1">🥇 ' + m.rank + '</span>' :
+                  m.rank === 2 ? '<span class="rank-badge rank-2">🥈 ' + m.rank + '</span>' :
+                  m.rank === 3 ? '<span class="rank-badge rank-3">🥉 ' + m.rank + '</span>' :
+                  '<span class="rank-badge">' + m.rank + '</span>'}
+            </td>
+            <td>
+                <div class="manager-name" onclick="editManager(${m.num}, '${m.name}')">
+                    ${m.name}
+                    <span class="edit-icon">✏️</span>
+                </div>
+            </td>
+            <td>${m.leads}</td>
+            <td>${m.process}</td>
+            <td>${m.no_answer}</td>
+            <td>${m.waiting}</td>
+            <td>${m.reject}</td>
+            <td style="color: var(--success); font-weight: 700;">${m.sales}</td>
+            <td style="color: var(--warning); font-weight: 700;">${m.conv}%</td>
+            <td style="color: var(--primary); font-weight: 700;">${m.revenue.toLocaleString()}</td>
+            <td>${m.avg_check.toLocaleString()}</td>
+            <td style="color: var(--danger);">${m.balance.toLocaleString()}</td>
+        </tr>
+    `).join('');
+}
+
+function editManager(num, currentName) {
+    editingManagerNum = num;
+    document.getElementById('newName').value = currentName;
+    document.getElementById('renameModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('renameModal').classList.remove('show');
+}
+
+async function saveManagerName() {
+    const newName = document.getElementById('newName').value.trim();
+    if (!newName) {
+        showToast('Введите имя!', 'error');
+        return;
+    }
+    
+    document.getElementById('loader').classList.add('show');
+    const formData = new FormData();
+    formData.append('num', editingManagerNum);
+    formData.append('name', newName);
+    
+    try {
+        const response = await fetch('/api/rename_manager', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('Имя успешно изменено!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast('Ошибка изменения имени', 'error');
+        }
+    } catch (e) {
+        showToast('Ошибка сети', 'error');
+    } finally {
+        document.getElementById('loader').classList.remove('show');
+    }
+}
+</script>
+</body>
+</html>
